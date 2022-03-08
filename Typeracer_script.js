@@ -2,6 +2,7 @@ const start = document.getElementsByClassName('gameView')[0];
 const input = document.getElementsByClassName('txtInput')[0];
 const times = document.getElementsByClassName('time');
 const time = document.getElementsByClassName('time')[times.length-1].innerHTML;
+//getting the words displayed on the screen
 const WordBank = start.childNodes[0].childNodes[1].childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes;
 let Words = "";
 for (let i = 0; i<WordBank.length; i++){
@@ -11,6 +12,7 @@ let left = parseInt(time.slice(1));
 left+=1;
 const b = setTimeout(begin,left*1000);
 function begin(){
+    //change this Number here  ↓ to change the speed
     const a = setInterval(type,27);
     let k = 0;
     function type(){
@@ -26,6 +28,7 @@ function begin(){
         clearInterval(a);
     }
 }
+//Made in March 8 2022
 //Go into a game, and wait until the timer starts
 //Press F12 and insert the script
 //Done
