@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 struct Node{
 	int value;
 	struct Node* left;
@@ -23,7 +24,7 @@ struct Node* createNode(int value, struct Node* parent){
 	newNode->parent = parent;
 	return newNode;
 }
-void addNode(int value, struct Tree* tree){
+void addNode(struct Tree* tree,int value){
 	if(tree->root == NULL){
 		struct Node* newNode = createNode(value,NULL);
 		tree->root = newNode;
@@ -52,7 +53,15 @@ void addNode(int value, struct Tree* tree){
 	previous->right = createNode(value,previous);
 	return;
 }
-struct Node* search(int value, struct Tree* tree){
+void insert(struct Tree* tree, int size, ...){
+	va_list ptr;
+	va_start(ptr,size);
+	for(int i = 0; i<size; i++){
+		addNode(tree, va_arg(ptr,int));
+	}
+	va_end(ptr);
+}
+struct Node* search(struct Tree* tree,int value){
 	struct Node* curr = tree->root;
 	while(curr!=NULL){
 		if(value>curr->value)curr=curr->right;
@@ -73,8 +82,8 @@ int findPredecessor(struct Node* curr){
 	while(pred->right!=NULL)pred=pred->right;
 	return pred->value;
 }
-void deleteVal(int value, struct Tree* tree){
-	struct Node* curr = search(value, tree);
+void deleteVal(struct Tree* tree,int value){
+	struct Node* curr = search(tree, value);
 	if(curr==NULL)return;
 	if(curr->left==NULL&&curr->right==NULL){
 		if(curr->parent->left==curr)curr->parent->left=NULL;
@@ -85,12 +94,12 @@ void deleteVal(int value, struct Tree* tree){
 	}
 	int replacementValue = findPredecessor(curr);
 	if(replacementValue==-1)replacementValue = findSuccessor(curr);
-	deleteVal(replacementValue,tree);
+	deleteVal(tree,replacementValue);
 	curr->value = replacementValue;
 	return;
 }
-void find(int value, struct Tree* tree){
-	if(search(value,tree)){
+void find( struct Tree* tree,int value){
+	if(search(tree,value)){
 		printf("%d is in the tree\n",value);
 		return;
 	}
@@ -109,16 +118,10 @@ void print(struct Tree* tree){
 }
 int main(){
 	struct Tree* tree = initialize();
-	addNode(12,tree);
-	addNode(9,tree);
-	addNode(15,tree);
-	addNode(16,tree);
-	addNode(10,tree);
-	addNode(8,tree);
-	addNode(14,tree);
-	deleteVal(15,tree);
-	find(27,tree);
-	find(16,tree);
+	insert(tree,7,4,2,1,3,6,5,7);
+	deleteVal(tree,15);
+	find(tree,27);
+	find(tree,16);
 	print(tree);
 	return 0;
 }
