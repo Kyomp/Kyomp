@@ -105,6 +105,17 @@ void find( struct Tree* tree,int value){
 	}
 	printf("%d is NOT in the tree\n",value);
 }
+void popAll(struct Node* curr){
+	if(curr!=NULL){
+		popAll(curr->right);
+		popAll(curr->left);
+		free(curr);
+	}
+}
+void deleteTree(struct Tree* tree){
+	popAll(tree->root);
+	tree->root=NULL;
+}
 void preOrder(struct Node* curr){
 	if(!curr){
 		return;
@@ -122,6 +133,8 @@ int main(){
 	deleteVal(tree,15);
 	find(tree,27);
 	find(tree,16);
+	print(tree);
+	deleteTree(tree);
 	print(tree);
 	return 0;
 }
