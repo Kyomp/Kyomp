@@ -98,6 +98,14 @@ void deleteVal(struct Tree* tree,int value){
 	curr->value = replacementValue;
 	return;
 }
+void deleteValVar(struct Tree* tree, int size, ...){
+	va_list ptr;
+	va_start(ptr,size);
+	for(int i = 0; i<size; i++){
+		deleteVal(tree,va_arg(ptr,int));
+	}
+	va_end(ptr);
+}
 void find( struct Tree* tree,int value){
 	if(search(tree,value)){
 		printf("%d is in the tree\n",value);
@@ -126,15 +134,13 @@ void preOrder(struct Node* curr){
 }
 void print(struct Tree* tree){
 	preOrder(tree->root);
+	puts("");
 }
 int main(){
 	struct Tree* tree = initialize();
-	insert(tree,7,4,2,1,3,6,5,7);
-	deleteVal(tree,15);
-	find(tree,27);
-	find(tree,16);
+	insert(tree,11,70,50,100,90,200,120,20,40,15,75,25);
 	print(tree);
-	deleteTree(tree);
+	deleteValVar(tree,4,70,50,15,20);
 	print(tree);
 	return 0;
 }
