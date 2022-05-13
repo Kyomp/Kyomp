@@ -76,23 +76,19 @@ void rebalance(struct Node* unbalanced, bool firstLeft){
 	BF = (checkDepth(curr->left) - checkDepth(curr->right))>0;
 	secondLeft = BF > 0?true:false;
 	secondLeft = BF == 0?firstLeft:secondLeft;
-	if(firstLeft&&secondLeft){
-		printf("LL");
+	if(firstLeft&&secondLeft){//LL
 		rightRotation(unbalanced);
 		return;
 	}
-	if(!firstLeft&&!secondLeft){
-		printf("RR");
+	if(!firstLeft&&!secondLeft){//RR
 		leftRotation(unbalanced);
 		return;
 	}
-	if(firstLeft&&!secondLeft){
-		printf("LR");
+	if(firstLeft&&!secondLeft){//RL
 		leftRotation(curr);
 		rightRotation(unbalanced);
 	}
-	if(!firstLeft&&secondLeft){
-		printf("LR");
+	if(!firstLeft&&secondLeft){//LR
 		rightRotation(curr);
 		leftRotation(unbalanced);
 	}
@@ -257,9 +253,7 @@ int main(){
 	struct Tree* tree = initialize();
 	insert(tree,11,2,76,17,21,6,28,79,53,91,44,14);
 	print(tree);
-	deleteValVar(tree,3,17,76,53);
-	print(tree);
-	deleteVal(tree,21);
+	deleteValVar(tree,3,17,76,53,21);
 	print(tree);
 	deleteTree(tree);
 	free(tree);
