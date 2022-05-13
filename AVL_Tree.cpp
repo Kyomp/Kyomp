@@ -171,7 +171,6 @@ int findPredecessor(struct Node* curr){
 void deleteVal(struct Tree* tree,int value){
 	struct Node* curr = search(tree, value);
 	if(curr==NULL)return;
-	printf("Value:%d Address:%d Parent:%d Left:%d Right:%d\n",curr->value,curr,curr->parent->value,curr->left,curr->right);
 	if(curr->left==NULL&&curr->right==NULL){
 		tree->length-=1;
 		
@@ -186,6 +185,7 @@ void deleteVal(struct Tree* tree,int value){
 		}
 		if(curr == tree->root){
 			tree->root = NULL;
+			free(curr);
 			return;
 		}
 		checkBalance(curr->parent);
