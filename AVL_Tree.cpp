@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <math.h>
+
 struct Node{
 	int value;
 	struct Node* left;
@@ -42,6 +43,7 @@ int checkDepth(struct Node* root){
 void rightRotation(struct Node* unbalanced){
 	struct Node* replacement = unbalanced->left;
 	unbalanced->left = replacement->right;
+	if(replacement->right)replacement->right->parent = unbalanced;
 	replacement->right = unbalanced;
 	replacement->parent = unbalanced->parent;
 	unbalanced->parent = replacement;
@@ -57,9 +59,11 @@ void rightRotation(struct Node* unbalanced){
 void leftRotation(struct Node* unbalanced){
 	struct Node* replacement = unbalanced->right;
 	unbalanced->right = replacement->left;
+	if(replacement->left)replacement->left->parent = unbalanced;
 	replacement->left = unbalanced;
 	replacement->parent = unbalanced->parent;
 	unbalanced->parent = replacement;
+	
 	if(replacement->parent == NULL){
 		return;
 	}
@@ -73,24 +77,32 @@ void rebalance(struct Node* unbalanced, bool firstLeft){
 	bool secondLeft;
 	struct Node* curr = firstLeft? unbalanced->left:unbalanced->right;
 	int BF;
-	BF = (checkDepth(curr->left) - checkDepth(curr->right))>0;
+	BF = checkDepth(curr->left) - checkDepth(curr->right);
 	secondLeft = BF > 0?true:false;
-	secondLeft = BF == 0?firstLeft:secondLeft;
+//	secondLeft = BF == 0?firstLeft:secondLeft;
 	if(firstLeft&&secondLeft){//LL
+		puts("LL");
 		rightRotation(unbalanced);
 		return;
 	}
 	if(!firstLeft&&!secondLeft){//RR
+		puts("RR");
 		leftRotation(unbalanced);
 		return;
 	}
-	if(firstLeft&&!secondLeft){//RL
+	if(firstLeft&&!secondLeft){//LR
+		puts("LR");
 		leftRotation(curr);
 		rightRotation(unbalanced);
+		printf("Node: %d Left: %d Right: %d\n",unbalanced->parent->value,unbalanced->parent->left?unbalanced->parent->left->value:0,unbalanced->parent->right?unbalanced->parent->right->value:0);
+		return;
 	}
-	if(!firstLeft&&secondLeft){//LR
+	if(!firstLeft&&secondLeft){//RL
+		puts("RL");
 		rightRotation(curr);
 		leftRotation(unbalanced);
+		printf("Node: %d Left: %d Right: %d\n",unbalanced->parent->value,unbalanced->parent->left?unbalanced->parent->left->value:0,unbalanced->parent->right?unbalanced->parent->right->value:0);
+		return;
 	}
 }
 void checkBalance(struct Node* start){
@@ -128,6 +140,7 @@ void addNode(struct Tree* tree,int value){
 		else return;
 	}while(curr!=NULL);
 	tree->length+=1;
+
 	struct Node* node = createNode(value,previous);
 	if(isLeft){
 		previous->left = node;
@@ -173,20 +186,16 @@ void deleteVal(struct Tree* tree,int value){
 	if(curr==NULL)return;
 	if(curr->left==NULL&&curr->right==NULL){
 		tree->length-=1;
-		
-		if(curr->parent->left==curr){
-			curr->parent->left=NULL;
-		}
-		else if(curr->parent->right==curr){
-			curr->parent->right=NULL;
-		}
-		else{
-			return;
-		}
 		if(curr == tree->root){
 			tree->root = NULL;
 			free(curr);
 			return;
+		}
+		if(curr->parent->left==curr){
+			curr->parent->left=NULL;
+		}
+		else{
+			curr->parent->right=NULL;
 		}
 		checkBalance(curr->parent);
 		rerootTree(tree);
@@ -197,14 +206,6 @@ void deleteVal(struct Tree* tree,int value){
 	if(replacementValue==-1)replacementValue = findSuccessor(curr);
 	deleteVal(tree,replacementValue);
 	curr->value = replacementValue;
-	if(curr->left){
-		curr->left->parent = curr;
-	}
-	if(curr->right){
-		curr->right->parent = curr;
-	}
-	//For some reason it doesn't stay the same IDK WHY
-	//I just wrote it just to patch it up
 	return;
 }
 void deleteValVar(struct Tree* tree, int size, ...){
@@ -253,7 +254,7 @@ int main(){
 	struct Tree* tree = initialize();
 	insert(tree,11,2,76,17,21,6,28,79,53,91,44,14);
 	print(tree);
-	deleteValVar(tree,3,17,76,53,21);
+	deleteValVar(tree,4,17,76,53,21);
 	print(tree);
 	deleteTree(tree);
 	free(tree);
