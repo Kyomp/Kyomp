@@ -93,27 +93,27 @@ void rebalance(struct Node* unbalanced, bool firstLeft){
     struct Node* curr = firstLeft? unbalanced->left: unbalanced->right;
     bool secondLeft = getHeight(curr->left)>getHeight(curr->right);
     if(firstLeft&&secondLeft){//LL
-		puts("LL");
+		// puts("LL");
 		rightRotation(unbalanced);
 		return;
 	}
 	if(!firstLeft&&!secondLeft){//RR
-		puts("RR");
+		// puts("RR");
 		leftRotation(unbalanced);
 		return;
 	}
 	if(firstLeft&&!secondLeft){//LR
-		puts("LR");
+		// puts("LR");
 		leftRotation(curr);
 		rightRotation(unbalanced);
-		printf("Node: %d Left: %d Right: %d\n",unbalanced->parent->value,unbalanced->parent->left?unbalanced->parent->left->value:0,unbalanced->parent->right?unbalanced->parent->right->value:0);
+		// printf("Node: %d Left: %d Right: %d\n",unbalanced->parent->value,unbalanced->parent->left?unbalanced->parent->left->value:0,unbalanced->parent->right?unbalanced->parent->right->value:0);
 		return;
 	}
 	if(!firstLeft&&secondLeft){//RL
-		puts("RL");
+		// puts("RL");
 		rightRotation(curr);
 		leftRotation(unbalanced);
-		printf("Node: %d Left: %d Right: %d\n",unbalanced->parent->value,unbalanced->parent->left?unbalanced->parent->left->value:0,unbalanced->parent->right?unbalanced->parent->right->value:0);
+		// printf("Node: %d Left: %d Right: %d\n",unbalanced->parent->value,unbalanced->parent->left?unbalanced->parent->left->value:0,unbalanced->parent->right?unbalanced->parent->right->value:0);
 		return;
 	}
 }
@@ -268,10 +268,37 @@ void print(struct Tree* tree){
 }
 int main(){
 	struct Tree* tree = initialize();
-	insert(tree,11,2,76,17,21,6,28,79,53,91,44,14);
-	print(tree);
-	deleteValVar(tree,4,17,76,53,21);
-	print(tree);
+	int input;
+	do{
+		puts("Choose:");
+		puts("1. Insert");
+		puts("2. Delete");
+		puts("3. View");
+		puts("4. Exit");
+		printf("Size of tree: %d\n",tree->length);
+		printf("Input: ");
+		scanf("%d",&input);getchar();
+		switch(input){
+			case 1:{
+				int value;
+				printf("Inserted Number: ");
+				scanf("%d",&value);getchar();
+				addNode(value,tree);
+				break;
+			}
+			case 2:{
+				int value;
+				printf("Deleted Number: ");
+				scanf("%d",&value);getchar();
+				deleteVal(tree,value);
+				break;
+			}
+			case 3:{
+				print(tree);
+				break;
+			}
+		}
+	}while(input!=4);
 	deleteTree(tree);
 	free(tree);
 	return 0;
