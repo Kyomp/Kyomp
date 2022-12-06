@@ -20,8 +20,9 @@ possible = list(pyautogui.locateAllOnScreen('Untouched.png'))
 possibleSpace = set(possible)
 safe = set()
 safe.add(possible[random.randint(0,len(possible)-1)])
-flagged = set(pyautogui.locateAllOnScreen('Flagged.png'))
+flagged = flagged = set(pyautogui.locateAllOnScreen('Flagged.png'))
 definite = set()
+noUse = set()
 def getAround(a):
     returnVal = set()
     returnVal.clear()
@@ -40,9 +41,12 @@ while len(safe)>0 or len(definite)>0:
     possibleDangers = list()
     for i in range(1,9):
         Is = set(pyautogui.locateAllOnScreen(str(i)+".png"))
+        Is.difference_update(noUse.intersection(Is))
         for num in Is:
             around = getAround(num)
             UntouchedZone = around.intersection(possibleSpace)
+            if(len(UntouchedZone) == 0):
+                noUse.add(num)
             DangerZone = around.intersection(flagged)
             if len(DangerZone) == i:
                 safe.update(UntouchedZone.difference(DangerZone))
@@ -53,6 +57,7 @@ while len(safe)>0 or len(definite)>0:
             flagged.update(definite)
             possibleSpace.difference_update(safe)
     if len(safe)==0 and len(definite)==0:
+        print(0)
         for i in possibleDangers:
             for j in possibleDangers:
                 if i[0].issuperset(j[0]):
@@ -60,13 +65,11 @@ while len(safe)>0 or len(definite)>0:
                         safe.update(i[0].difference(j[0]))
                     elif i[1]-j[1]==len(i[0].difference(j[0])):
                         definite.update(i[0].difference(j[0]))
-                if j[0].issuperset(i[0]):
-                    if i[1] == j[1]:
-                        safe.update(i[0].difference(j[0]))
-                    elif j[1] - i[1] == len(j[0].difference(i[0])):
-                        definite.update(j[0].difference(i[0]))
-                flagged.update(definite)
-    if len(safe)==0 and len(definite)==0:#just to check if there's actually no more moves left possible that's 100% safe
+                    else:
+                        possibleDangers.remove(i)
+                        possibleDangers.append([i[0].difference(j[0]),i[1]-j[1]])
+                        break
+    if len(safe)==0 and len(definite)==0:
         print(1)
         for i in possibleDangers:
             for j in possibleDangers:
