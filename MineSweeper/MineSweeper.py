@@ -66,3 +66,20 @@ while len(safe)>0 or len(definite)>0:
                     elif j[1] - i[1] == len(j[0].difference(i[0])):
                         definite.update(j[0].difference(i[0]))
                 flagged.update(definite)
+    if len(safe)==0 and len(definite)==0:#just to check if there's actually no more moves left possible that's 100% safe
+        print(1)
+        for i in possibleDangers:
+            for j in possibleDangers:
+                if i[0].issuperset(j[0]):
+                    if i[1]==j[1]:
+                        safe.update(i[0].difference(j[0]))
+                    elif i[1]-j[1]==len(i[0].difference(j[0])):
+                        definite.update(i[0].difference(j[0]))
+                    else:
+                        possibleDangers.remove(i)
+                        possibleDangers.append([i[0].difference(j[0]),i[1]-j[1]])
+                        break
+    flagged.update(definite)
+pyautogui.keyDown('alt')
+pyautogui.press('tab')
+pyautogui.keyUp('alt')
