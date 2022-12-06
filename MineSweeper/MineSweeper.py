@@ -37,6 +37,9 @@ while len(safe)>0 or len(definite)>0:
     rightClickList(definite)
     definite.clear()
     pyautogui.moveTo(10,10)
+    bomb = list(pyautogui.locateAllOnScreen('Detonate.png'))
+    if len(bomb) > 0:
+        break
     possibleSpace = set(pyautogui.locateAllOnScreen('Untouched.png'))
     possibleDangers = list()
     for i in range(1,9):
@@ -57,7 +60,6 @@ while len(safe)>0 or len(definite)>0:
             flagged.update(definite)
             possibleSpace.difference_update(safe)
     if len(safe)==0 and len(definite)==0:
-        print(0)
         for i in possibleDangers:
             for j in possibleDangers:
                 if i[0].issuperset(j[0]):
@@ -70,18 +72,7 @@ while len(safe)>0 or len(definite)>0:
                         possibleDangers.append([i[0].difference(j[0]),i[1]-j[1]])
                         break
     if len(safe)==0 and len(definite)==0:
-        print(1)
-        for i in possibleDangers:
-            for j in possibleDangers:
-                if i[0].issuperset(j[0]):
-                    if i[1]==j[1]:
-                        safe.update(i[0].difference(j[0]))
-                    elif i[1]-j[1]==len(i[0].difference(j[0])):
-                        definite.update(i[0].difference(j[0]))
-                    else:
-                        possibleDangers.remove(i)
-                        possibleDangers.append([i[0].difference(j[0]),i[1]-j[1]])
-                        break
+        safe.add(random.choice(tuple(possibleDangers[random.randint(0,len(possibleDangers)-1)][0])))
     flagged.update(definite)
 pyautogui.keyDown('alt')
 pyautogui.press('tab')
