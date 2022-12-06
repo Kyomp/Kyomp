@@ -20,7 +20,7 @@ possible = list(pyautogui.locateAllOnScreen('Untouched.png'))
 possibleSpace = set(possible)
 safe = set()
 safe.add(possible[random.randint(0,len(possible)-1)])
-flagged = set()
+flagged = set(pyautogui.locateAllOnScreen('Flagged.png'))
 definite = set()
 def getAround(a):
     returnVal = set()
@@ -36,7 +36,6 @@ while len(safe)>0 or len(definite)>0:
     rightClickList(definite)
     definite.clear()
     pyautogui.moveTo(10,10)
-    flagged = set(pyautogui.locateAllOnScreen('Flagged.png'))
     possibleSpace = set(pyautogui.locateAllOnScreen('Untouched.png'))
     possibleDangers = list()
     for i in range(1,9):
@@ -51,6 +50,8 @@ while len(safe)>0 or len(definite)>0:
                 definite.update(UntouchedZone)
             else:
                 possibleDangers.append([UntouchedZone,i-len(DangerZone)])
+            flagged.update(definite)
+            possibleSpace.difference_update(safe)
     if len(safe)==0 and len(definite)==0:
         for i in possibleDangers:
             for j in possibleDangers:
@@ -64,3 +65,4 @@ while len(safe)>0 or len(definite)>0:
                         safe.update(i[0].difference(j[0]))
                     elif j[1] - i[1] == len(j[0].difference(i[0])):
                         definite.update(j[0].difference(i[0]))
+                flagged.update(definite)
