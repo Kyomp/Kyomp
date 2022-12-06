@@ -71,7 +71,7 @@ while len(safe)>0 or len(definite)>0:
                         possibleDangers.remove(i)
                         possibleDangers.append([i[0].difference(j[0]),i[1]-j[1]])
                         break
-    if len(safe)==0 and len(definite)==0:
+    if len(safe)==0 and len(definite)==0:#if there aren't any good moves to play, pick a random tile adjacent to chosen tiles.
         safe.add(random.choice(tuple(possibleDangers[random.randint(0,len(possibleDangers)-1)][0])))
     flagged.update(definite)
 pyautogui.keyDown('alt')
