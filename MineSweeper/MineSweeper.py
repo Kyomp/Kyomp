@@ -27,12 +27,13 @@ def rightClickList(a):
 time.sleep(1)
 possible = list(pyautogui.locateAllOnScreen('Untouched.png', confidence = 0.8))
 possibleSpace = set(possible)
-safe = set()
-safe.add(possible[random.randint(0, len(possible) - 1)])
 topLeft = possible[0]
 bottomRight = possible[-1]
 reg = (topLeft[0]-10,topLeft[1]-10,bottomRight[0]-topLeft[0]+26,bottomRight[1]-topLeft[1]+26)
 flagged = set(pyautogui.locateAllOnScreen('Flagged.png', confidence = 0.8, region = reg))
+safe = set()
+if len(flagged == 0):
+    safe.add(possible[random.randint(0, len(possible) - 1)])
 definite = set()
 noUse = [set(), set(), set(), set(), set(), set(), set(), set()]
 
@@ -58,7 +59,7 @@ while len(safe) > 0 or len(definite) > 0:
     possibleSpace = set(pyautogui.locateAllOnScreen('Untouched.png', confidence = 0.8, region = reg))
     possibleDangers = list()
     for i in range(1, 9):
-        Is = set(pyautogui.locateAllOnScreen(str(i) + ".png", confidence = 0.8, region = reg))
+        Is = set(pyautogui.locateAllOnScreen(str(i) + "2.png", confidence = 0.8, region = reg))
         Is.difference_update(noUse[i-1])
         for num in Is:
             around = getAround(num)
