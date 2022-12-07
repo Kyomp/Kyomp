@@ -47,7 +47,7 @@ def getAround(a):
     return returnVal
 
 
-while len(safe) > 0 or len(definite) > 0:
+while len(possibleSpace) > 0:
     rightClickList(definite)
     definite.clear()
     clickList(safe)
@@ -59,7 +59,7 @@ while len(safe) > 0 or len(definite) > 0:
     possibleSpace = set(pyautogui.locateAllOnScreen('Untouched.png', confidence = 0.8, region = reg))
     possibleDangers = list()
     for i in range(1, 9):
-        Is = set(pyautogui.locateAllOnScreen(str(i) + "2.png", confidence = 0.8, region = reg))
+        Is = set(pyautogui.locateAllOnScreen(str(i) + ".png", confidence = 0.8, region = reg))
         Is.difference_update(noUse[i-1])
         for num in Is:
             around = getAround(num)
