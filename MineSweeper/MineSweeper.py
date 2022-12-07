@@ -106,11 +106,10 @@ while len(possibleSpace) > 0:
         print("the dice goes BRRRRRRRRRRRR")
         safe.add(random.choice(tuple(possibleDangers[random.randint(0, len(possibleDangers) - 1)][0])))
         win = False
+    possibleSpace.difference_update(safe)
     flagged.update(definite)
-    if win:
-        if(len(possibleSpace)>0):
-            clickList(possibleSpace)
-            possibleSpace.clear()
+if len(possibleSpace) > 0:
+    clickList(possibleSpace)
 pyautogui.keyDown('alt')
 pyautogui.press('tab')
 pyautogui.keyUp('alt')
