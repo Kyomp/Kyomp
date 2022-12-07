@@ -25,14 +25,16 @@ def rightClickList(a):
 
 
 time.sleep(1)
-possible = list(pyautogui.locateAllOnScreen('Untouched.png'))
+possible = list(pyautogui.locateAllOnScreen('Untouched.png', confidence = 0.8))
 possibleSpace = set(possible)
 safe = set()
 safe.add(possible[random.randint(0, len(possible) - 1)])
-flagged = set(pyautogui.locateAllOnScreen('Flagged.png'))
+topLeft = possible[0]
+bottomRight = possible[-1]
+reg = (topLeft[0]-10,topLeft[1]-10,bottomRight[0]-topLeft[0]+26,bottomRight[1]-topLeft[1]+26)
+flagged = set(pyautogui.locateAllOnScreen('Flagged.png', confidence = 0.8, region = reg))
 definite = set()
 noUse = [set(), set(), set(), set(), set(), set(), set(), set()]
-
 
 def getAround(a):
     returnVal = set()
@@ -45,18 +47,18 @@ def getAround(a):
 
 
 while len(safe) > 0 or len(definite) > 0:
-    clickList(safe)
-    safe.clear()
     rightClickList(definite)
     definite.clear()
+    clickList(safe)
+    safe.clear()
     pyautogui.moveTo(10, 10)
-    bomb = list(pyautogui.locateAllOnScreen('Detonate.png'))
+    bomb = list(pyautogui.locateAllOnScreen('Detonate.png', confidence = 0.8, region = reg))
     if len(bomb) > 0:
         break
-    possibleSpace = set(pyautogui.locateAllOnScreen('Untouched.png'))
+    possibleSpace = set(pyautogui.locateAllOnScreen('Untouched.png', confidence = 0.8, region = reg))
     possibleDangers = list()
     for i in range(1, 9):
-        Is = set(pyautogui.locateAllOnScreen(str(i) + ".png"))
+        Is = set(pyautogui.locateAllOnScreen(str(i) + "2.png", confidence = 0.8, region = reg))
         Is.difference_update(noUse[i-1])
         for num in Is:
             around = getAround(num)
@@ -87,7 +89,7 @@ while len(safe) > 0 or len(definite) > 0:
                         possibleDangers.remove(i)
                         possibleDangers.append([i[0].difference(j[0]), i[1] - j[1]])
                         break
-    if len(safe) == 0 and len(definite) == 0 and len(possibleSpace)>0:
+    if len(safe) == 0 and len(definite) == 0 and len(possibleSpace) > 0:
         print("the dice goes BRRRRRRRRRRRR")
         safe.add(random.choice(tuple(possibleDangers[random.randint(0, len(possibleDangers) - 1)][0])))
     flagged.update(definite)
