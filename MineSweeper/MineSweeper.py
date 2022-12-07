@@ -110,7 +110,7 @@ while len(possibleSpace) > 0:
     if win:
         if(len(possibleSpace)>0):
             clickList(possibleSpace)
-        break
+            possibleSpace.clear()
 pyautogui.keyDown('alt')
 pyautogui.press('tab')
 pyautogui.keyUp('alt')
