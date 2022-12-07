@@ -31,7 +31,7 @@ safe = set()
 safe.add(possible[random.randint(0, len(possible) - 1)])
 flagged = set(pyautogui.locateAllOnScreen('Flagged.png'))
 definite = set()
-noUse = set()
+noUse = [set(), set(), set(), set(), set(), set(), set(), set()]
 
 
 def getAround(a):
@@ -57,20 +57,20 @@ while len(safe) > 0 or len(definite) > 0:
     possibleDangers = list()
     for i in range(1, 9):
         Is = set(pyautogui.locateAllOnScreen(str(i) + ".png"))
-        Is.difference_update(noUse.intersection(Is))
+        Is.difference_update(noUse[i-1])
         for num in Is:
             around = getAround(num)
             UntouchedZone = around.intersection(possibleSpace)
             if len(UntouchedZone) == 0:
-                noUse.add(num)
+                noUse[i-1].add(num)
                 continue
             DangerZone = around.intersection(flagged)
             if len(DangerZone) == i:
                 safe.update(UntouchedZone.difference(DangerZone))
-                noUse.add(num)
+                noUse[i-1].add(num)
             elif len(UntouchedZone) + len(DangerZone) == i:
                 definite.update(UntouchedZone)
-                noUse.add(num)
+                noUse[i-1].add(num)
             else:
                 possibleDangers.append([UntouchedZone, i - len(DangerZone)])
             flagged.update(definite)
