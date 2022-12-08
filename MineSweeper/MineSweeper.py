@@ -57,14 +57,17 @@ while len(possibleSpace) > 0:
     bomb = list(pyautogui.locateAllOnScreen('Detonate.png', confidence=0.8, region=reg))
     if len(bomb) > 0:
         click(pyautogui.locateOnScreen('dead.png', confidence=0.8))
-        possibleSpace = set(pyautogui.locateAllOnScreen('Untouched.png', confidence=0.8, region=reg))
-        safe.clear()
-        definite.clear()
-        safe.add(possible[random.randint(0, len(possible) - 1)])
-        flagged.clear()
-        noUse.clear()
-        noUse = [set(), set(), set(), set(), set(), set(), set(), set()]
-        continue
+        #If you want to script to stop after a game over
+        break
+        #If you want the game to continue playing until it wins
+        # possibleSpace = set(pyautogui.locateAllOnScreen('Untouched.png', confidence=0.8, region=reg))
+        # safe.clear()
+        # definite.clear()
+        # safe.add(possible[random.randint(0, len(possible) - 1)])
+        # flagged.clear()
+        # noUse.clear()
+        # noUse = [set(), set(), set(), set(), set(), set(), set(), set()]
+        # continue
     possibleSpace = set(pyautogui.locateAllOnScreen('Untouched.png', confidence=0.8, region=reg))
     possibleDangers = list()
     for i in range(1, 9):
