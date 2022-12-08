@@ -30,14 +30,13 @@ possibleSpace = set(possible)
 topLeft = possible[0]
 bottomRight = possible[-1]
 reg = (topLeft[0]-10, topLeft[1]-10, bottomRight[0]-topLeft[0]+26, bottomRight[1]-topLeft[1]+26)
-flagged = set(pyautogui.locateAllOnScreen('Flagged.png', confidence=0.8, region=reg))
+flagged = set()
 safe = set()
-if len(flagged) == 0:
-    a = pyautogui.locateOnScreen('start.png', confidence = 0.8)
-    if type(a) is not Box:
-        safe.add(possible[random.randint(0, len(possible) - 1)])
-    else:
-        safe.add(a)
+a = pyautogui.locateOnScreen('start.png', confidence=0.8, region=reg)
+if type(a) is not Box:
+    safe.add(possible[random.randint(0, len(possible) - 1)])
+else:
+    safe.add(a)
 definite = set()
 noUse = [set(), set(), set(), set(), set(), set(), set(), set()]
 
@@ -50,7 +49,6 @@ def getAround(a):
             returnVal.add(Box(a[0] + n * 16, a[1] + m * 16, a[2], a[3]))
     returnVal.difference_update({a})
     return returnVal
-
 
 while len(possibleSpace) > 0:
     rightClickList(definite)
@@ -97,17 +95,15 @@ while len(possibleSpace) > 0:
     if len(safe) == 0 and len(definite) == 0:
         for i in possibleDangers:
             for j in possibleDangers:
-                if not i[0] == j[0]:
-                    if i[0].issuperset(j[0]):
-                        if i[1] == j[1]:
-                            safe.update(i[0].difference(j[0]))
-                            possibleDangers.remove(j)
-                        elif i[1] - j[1] == len(i[0].difference(j[0])):
-                            possibleDangers.remove(j)
-                        else:
-                            possibleDangers.append([i[0].difference(j[0]), i[1] - j[1]])
-                        possibleDangers.remove(i)
-                        break
+                if i[0].issuperset(j[0]) and not i == j:
+                    if i[1] == j[1]:
+                        safe.update(i[0].difference(j[0]))
+                    elif i[1] - j[1] == len(i[0].difference(j[0])):
+                        definite.update(i[0].difference(j[0]))
+                    else:
+                        possibleDangers.append([i[0].difference(j[0]), i[1] - j[1]])
+                    possibleDangers.remove(i)
+                    break
     if len(safe) == 0 and len(definite) == 0:
         print("the dice goes BRRRRRRRRRRRR")
         if len(possibleDangers) > 0:
