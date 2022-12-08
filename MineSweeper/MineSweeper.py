@@ -25,17 +25,18 @@ def rightClickList(a):
 
 
 time.sleep(1)
-possible = list(pyautogui.locateAllOnScreen('Untouched.png', confidence = 0.8))
+possible = list(pyautogui.locateAllOnScreen('Untouched.png', confidence=0.8))
 possibleSpace = set(possible)
 topLeft = possible[0]
 bottomRight = possible[-1]
-reg = (topLeft[0]-10,topLeft[1]-10,bottomRight[0]-topLeft[0]+26,bottomRight[1]-topLeft[1]+26)
-flagged = set(pyautogui.locateAllOnScreen('Flagged.png', confidence = 0.8, region = reg))
+reg = (topLeft[0]-10, topLeft[1]-10, bottomRight[0]-topLeft[0]+26, bottomRight[1]-topLeft[1]+26)
+flagged = set(pyautogui.locateAllOnScreen('Flagged.png', confidence=0.8, region=reg))
 safe = set()
 if len(flagged) == 0:
     safe.add(possible[random.randint(0, len(possible) - 1)])
 definite = set()
 noUse = [set(), set(), set(), set(), set(), set(), set(), set()]
+
 
 def getAround(a):
     returnVal = set()
@@ -46,16 +47,16 @@ def getAround(a):
     returnVal.difference_update({a})
     return returnVal
 
-win = True
+
 while len(possibleSpace) > 0:
     rightClickList(definite)
     definite.clear()
     clickList(safe)
     safe.clear()
     pyautogui.moveTo(10, 10)
-    bomb = list(pyautogui.locateAllOnScreen('Detonate.png', confidence = 0.8, region = reg))
+    bomb = list(pyautogui.locateAllOnScreen('Detonate.png', confidence=0.8, region=reg))
     if len(bomb) > 0:
-        click(pyautogui.locateOnScreen('dead.png',confidence = 0.8))
+        click(pyautogui.locateOnScreen('dead.png', confidence=0.8))
         possibleSpace = set(pyautogui.locateAllOnScreen('Untouched.png', confidence=0.8, region=reg))
         safe.clear()
         definite.clear()
@@ -64,23 +65,21 @@ while len(possibleSpace) > 0:
         noUse.clear()
         noUse = [set(), set(), set(), set(), set(), set(), set(), set()]
         continue
-    possibleSpace = set(pyautogui.locateAllOnScreen('Untouched.png', confidence = 0.8, region = reg))
+    possibleSpace = set(pyautogui.locateAllOnScreen('Untouched.png', confidence=0.8, region=reg))
     possibleDangers = list()
     for i in range(1, 9):
-        Is = set(pyautogui.locateAllOnScreen(str(i) + "2.png", confidence = 0.8, region = reg))
+        Is = set(pyautogui.locateAllOnScreen(str(i) + "2.png", confidence=0.8, region=reg))
         Is.difference_update(noUse[i-1])
         for num in Is:
             around = getAround(num)
             UntouchedZone = around.intersection(possibleSpace)
             if len(UntouchedZone) == 0:
                 noUse[i-1].add(num)
-                win = False
                 continue
             DangerZone = around.intersection(flagged)
             if len(DangerZone) == i:
                 safe.update(UntouchedZone.difference(DangerZone))
                 noUse[i-1].add(num)
-                win = False
             elif len(UntouchedZone) + len(DangerZone) == i:
                 definite.update(UntouchedZone)
                 noUse[i-1].add(num)
@@ -94,22 +93,18 @@ while len(possibleSpace) > 0:
                 if i[0].issuperset(j[0]):
                     if i[1] == j[1]:
                         safe.update(i[0].difference(j[0]))
-                        win = False
                     elif i[1] - j[1] == len(i[0].difference(j[0])):
                         definite.update(i[0].difference(j[0]))
-                        win = False
-                    else:
                         possibleDangers.remove(i)
                         possibleDangers.append([i[0].difference(j[0]), i[1] - j[1]])
                         break
-    if len(safe) == 0 and len(definite) == 0 and len(possibleDangers) > 0:
+    if len(safe) == 0 and len(definite) == 0:
         print("the dice goes BRRRRRRRRRRRR")
-        safe.add(random.choice(tuple(possibleDangers[random.randint(0, len(possibleDangers) - 1)][0])))
-        win = False
-    possibleSpace.difference_update(safe)
+        if len(possibleDangers) > 0:
+            safe.add(random.choice(tuple(possibleDangers[random.randint(0, len(possibleDangers) - 1)][0])))
+        elif len(possibleSpace) > 0:
+            safe.add(random.choice(tuple(possibleSpace)))
     flagged.update(definite)
-if len(possibleSpace) > 0:
-    clickList(possibleSpace)
 pyautogui.keyDown('alt')
 pyautogui.press('tab')
 pyautogui.keyUp('alt')
