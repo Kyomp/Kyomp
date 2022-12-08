@@ -33,7 +33,11 @@ reg = (topLeft[0]-10, topLeft[1]-10, bottomRight[0]-topLeft[0]+26, bottomRight[1
 flagged = set(pyautogui.locateAllOnScreen('Flagged.png', confidence=0.8, region=reg))
 safe = set()
 if len(flagged) == 0:
-    safe.add(possible[random.randint(0, len(possible) - 1)])
+    a = pyautogui.locateOnScreen('start.png', confidence = 0.8)
+    if type(a) is not Box:
+        safe.add(possible[random.randint(0, len(possible) - 1)])
+    else:
+        safe.add(a)
 definite = set()
 noUse = [set(), set(), set(), set(), set(), set(), set(), set()]
 
@@ -54,12 +58,12 @@ while len(possibleSpace) > 0:
     clickList(safe)
     safe.clear()
     pyautogui.moveTo(10, 10)
-    bomb = list(pyautogui.locateAllOnScreen('Detonate.png', confidence=0.8, region=reg))
-    if len(bomb) > 0:
-        click(pyautogui.locateOnScreen('dead.png', confidence=0.8))
+    if len(list(pyautogui.locateAllOnScreen('Detonate.png', confidence=0.8, region=reg))) > 0:
+        print("BOOM")
         #If you want to script to stop after a game over
         break
         #If you want the game to continue playing until it wins
+        # click(pyautogui.locateOnScreen('dead.png', confidence=0.8))
         # possibleSpace = set(pyautogui.locateAllOnScreen('Untouched.png', confidence=0.8, region=reg))
         # safe.clear()
         # definite.clear()
@@ -93,13 +97,16 @@ while len(possibleSpace) > 0:
     if len(safe) == 0 and len(definite) == 0:
         for i in possibleDangers:
             for j in possibleDangers:
-                if i[0].issuperset(j[0]):
-                    if i[1] == j[1]:
-                        safe.update(i[0].difference(j[0]))
-                    elif i[1] - j[1] == len(i[0].difference(j[0])):
-                        definite.update(i[0].difference(j[0]))
+                if not i[0] == j[0]:
+                    if i[0].issuperset(j[0]):
+                        if i[1] == j[1]:
+                            safe.update(i[0].difference(j[0]))
+                            possibleDangers.remove(j)
+                        elif i[1] - j[1] == len(i[0].difference(j[0])):
+                            possibleDangers.remove(j)
+                        else:
+                            possibleDangers.append([i[0].difference(j[0]), i[1] - j[1]])
                         possibleDangers.remove(i)
-                        possibleDangers.append([i[0].difference(j[0]), i[1] - j[1]])
                         break
     if len(safe) == 0 and len(definite) == 0:
         print("the dice goes BRRRRRRRRRRRR")
