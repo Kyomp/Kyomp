@@ -30,13 +30,14 @@ possibleSpace = set(possible)
 topLeft = possible[0]
 bottomRight = possible[-1]
 reg = (topLeft[0]-10, topLeft[1]-10, bottomRight[0]-topLeft[0]+26, bottomRight[1]-topLeft[1]+26)
-flagged = set()
+flagged = set(list(pyautogui.locateAllOnScreen('Flagged.png', confidence=0.8, region=reg)))
 safe = set()
 a = pyautogui.locateOnScreen('start.png', confidence=0.8, region=reg)
-if type(a) is not Box:
-    safe.add(possible[random.randint(0, len(possible) - 1)])
-else:
-    safe.add(a)
+if len(flagged) == 0:
+    if type(a) is not Box:
+        safe.add(possible[random.randint(0, len(possible) - 1)])
+    else:
+        safe.add(a)
 definite = set()
 noUse = [set(), set(), set(), set(), set(), set(), set(), set()]
 
