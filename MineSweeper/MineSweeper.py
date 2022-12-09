@@ -131,6 +131,8 @@ while len(possibleSpace) > 0:
         elif len(possibleSpace) > 0:
             safe.add(random.choice(tuple(possibleSpace)))
     flagged.update(definite)
+clickList(safe)
+rightClickList(definite)
 pyautogui.keyDown('alt')
 pyautogui.press('tab')
 pyautogui.keyUp('alt')
