@@ -95,7 +95,9 @@ while len(possibleSpace) > 0:
     if len(safe) == 0 and len(definite) == 0:
         for i in possibleDangers:
             for j in possibleDangers:
-                if i[0].issuperset(j[0]) and not i == j:
+                if i == j:
+                    continue
+                if i[0].issuperset(j[0]):
                     if i[1] == j[1]:
                         safe.update(i[0].difference(j[0]))
                     elif i[1] - j[1] == len(i[0].difference(j[0])):
@@ -104,6 +106,35 @@ while len(possibleSpace) > 0:
                         possibleDangers.append([i[0].difference(j[0]), i[1] - j[1]])
                     possibleDangers.remove(i)
                     break
+                elif len(i[0].intersection(j[0])) > 0:
+                    inter = i[0].intersection(j[0])
+                    i_new = i[0].difference(j[0])
+                    j_new = j[0].difference(i[0])
+                    must_atleast = max(i[1] - len(i_new), j[1] - len(j_new), 0)
+                    must_atmost = min(i[1], j[1], len(inter))
+                    if must_atleast > 0 and must_atleast == must_atmost:
+                        add = False
+                        if len(i_new) > 0:
+                            if i[1] == must_atleast:
+                                safe.update(i_new)
+                                possibleDangers.remove(i)
+                                add = True
+                            elif i[1] - must_atleast == len(i_new):
+                                definite.update(i_new)
+                                possibleDangers.remove(i)
+                                add = True
+                        if len(j_new) > 0:
+                            if j[1] == must_atleast:
+                                safe.update(j_new)
+                                possibleDangers.remove(j)
+                                add = True
+                            elif j[1] - must_atleast == len(j_new):
+                                definite.update(j_new)
+                                possibleDangers.remove(j)
+                                add = True
+                        if add:
+                            possibleDangers.append([inter, must_atleast])
+                            break
     if len(safe) == 0 and len(definite) == 0:
         print("the dice goes BRRRRRRRRRRRR")
         if len(possibleDangers) > 0:
