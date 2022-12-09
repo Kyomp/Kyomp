@@ -2,8 +2,6 @@ import pyautogui
 import time
 import random
 from pyscreeze import Box
-
-
 # pyautogui.FAILSAFE=False
 
 def click(a):
@@ -51,6 +49,7 @@ def getAround(a):
     returnVal.difference_update({a})
     return returnVal
 
+
 while len(possibleSpace) > 0:
     rightClickList(definite)
     definite.clear()
@@ -60,17 +59,17 @@ while len(possibleSpace) > 0:
     if len(list(pyautogui.locateAllOnScreen('Detonate.png', confidence=0.8, region=reg))) > 0:
         print("BOOM")
         #If you want to script to stop after a game over
-        break
+        # break
         #If you want the game to continue playing until it wins
-        # click(pyautogui.locateOnScreen('dead.png', confidence=0.8))
-        # possibleSpace = set(pyautogui.locateAllOnScreen('Untouched.png', confidence=0.8, region=reg))
-        # safe.clear()
-        # definite.clear()
-        # safe.add(possible[random.randint(0, len(possible) - 1)])
-        # flagged.clear()
-        # noUse.clear()
-        # noUse = [set(), set(), set(), set(), set(), set(), set(), set()]
-        # continue
+        click(pyautogui.locateOnScreen('dead.png', confidence=0.8))
+        possibleSpace = set(pyautogui.locateAllOnScreen('Untouched.png', confidence=0.8, region=reg))
+        safe.clear()
+        definite.clear()
+        safe.add(possible[random.randint(0, len(possible) - 1)])
+        flagged.clear()
+        noUse.clear()
+        noUse = [set(), set(), set(), set(), set(), set(), set(), set()]
+        continue
     possibleSpace = set(pyautogui.locateAllOnScreen('Untouched.png', confidence=0.8, region=reg))
     possibleDangers = list()
     for i in range(1, 9):
@@ -94,20 +93,12 @@ while len(possibleSpace) > 0:
             flagged.update(definite)
             possibleSpace.difference_update(safe)
     if len(safe) == 0 and len(definite) == 0:
+        print('logic')
         for i in possibleDangers:
             for j in possibleDangers:
                 if i == j:
                     continue
-                if i[0].issuperset(j[0]):
-                    if i[1] == j[1]:
-                        safe.update(i[0].difference(j[0]))
-                    elif i[1] - j[1] == len(i[0].difference(j[0])):
-                        definite.update(i[0].difference(j[0]))
-                    else:
-                        possibleDangers.append([i[0].difference(j[0]), i[1] - j[1]])
-                    possibleDangers.remove(i)
-                    break
-                elif len(i[0].intersection(j[0])) > 0:
+                if len(i[0].intersection(j[0])) > 0:
                     inter = i[0].intersection(j[0])
                     i_new = i[0].difference(j[0])
                     j_new = j[0].difference(i[0])
@@ -115,28 +106,25 @@ while len(possibleSpace) > 0:
                     must_atmost = min(i[1], j[1], len(inter))
                     if must_atleast > 0 and must_atleast == must_atmost:
                         add = False
-                        if len(i_new) > 0:
-                            if i[1] == must_atleast:
-                                safe.update(i_new)
-                                possibleDangers.remove(i)
-                                add = True
-                            elif i[1] - must_atleast == len(i_new):
-                                definite.update(i_new)
-                                possibleDangers.remove(i)
-                                add = True
-                        if len(j_new) > 0:
-                            if j[1] == must_atleast:
-                                safe.update(j_new)
-                                possibleDangers.remove(j)
-                                add = True
-                            elif j[1] - must_atleast == len(j_new):
-                                definite.update(j_new)
-                                possibleDangers.remove(j)
-                                add = True
-                        if add:
-                            possibleDangers.append([inter, must_atleast])
-                            break
+                        if i[1] == must_atleast:
+                            safe.update(i_new)
+                        elif i[1] - must_atleast == len(i_new):
+                            definite.update(i_new)
+                        else:
+                            possibleDangers.append([i_new, i[1] - must_atleast])
+                        if j[1] == must_atleast:
+                            safe.update(j_new)
+                        elif j[1] - must_atleast == len(j_new):
+                            definite.update(j_new)
+                        else:
+                            possibleDangers.append([j_new, j[1] - must_atleast])
+                        possibleDangers.remove(i)
+                        possibleDangers.remove(j)
+                        possibleDangers.append([inter, must_atleast])
+                        break
+
     if len(safe) == 0 and len(definite) == 0:
+        # break
         print("the dice goes BRRRRRRRRRRRR")
         if len(possibleDangers) > 0:
             safe.add(random.choice(tuple(possibleDangers[random.randint(0, len(possibleDangers) - 1)][0])))
