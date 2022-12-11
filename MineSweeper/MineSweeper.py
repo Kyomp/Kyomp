@@ -103,7 +103,7 @@ while len(possibleSpace) > 0:
             for j in possibleDangers:
                 if len(j[0]) == 0:
                     continue
-                if i[0] == j[0]:
+                if i == j:
                     continue
                 if len(i[0].intersection(j[0])) > 0:
                     inter = i[0].intersection(j[0])
