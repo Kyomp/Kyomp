@@ -111,28 +111,26 @@ while len(possibleSpace) > 0:
                     j_new = j[0].difference(i[0])
                     must_atleast = max(i[1] - len(i_new), j[1] - len(j_new), 0)
                     must_atmost = min(i[2], j[2], len(inter))
+                    IDanger = [i_new, max(i[1] - must_atmost, 0), min(i[2] - must_atleast, len(i_new))]
+                    JDanger = [j_new, max(j[1] - must_atmost, 0), min(j[2] - must_atleast, len(j_new))]
                     if must_atleast == must_atmost:
-                        if len(i_new) > 0:
-                            if i[2] == must_atleast:
-                                safe.update(i_new)
-                            elif i[1] - must_atleast == len(i_new):
-                                definite.update(i_new)
-                            else:
-                                possibleDangers.append([i_new, i[1] - must_atleast, i[2] - must_atleast])
-                        if len(j_new) > 0:
-                            if j[2] == must_atleast:
-                                safe.update(j_new)
-                            elif j[1] - must_atleast == len(j_new):
-                                definite.update(j_new)
-                            else:
-                                possibleDangers.append([j_new, j[1] - must_atleast, j[2] - must_atleast])
+                        if i[2] == must_atleast:
+                            safe.update(i_new)
+                        elif i[1] - must_atleast == len(i_new):
+                            definite.update(i_new)
+                        elif IDanger not in possibleDangers and len(i_new) > 0:
+                            possibleDangers.append(IDanger)
+                        if j[2] == must_atleast:
+                            safe.update(j_new)
+                        elif j[1] - must_atleast == len(j_new):
+                            definite.update(j_new)
+                        elif JDanger not in possibleDangers and len(j_new) > 0:
+                            possibleDangers.append(JDanger)
                         possibleDangers.remove(i)
                         possibleDangers.remove(j)
                         possibleDangers.append([inter, must_atleast, must_atmost])
                         break
                     else:
-                        IDanger = [i_new, max(i[1] - must_atmost, 0), min(i[2] - must_atleast, len(i_new))]
-                        JDanger = [j_new, max(j[1] - must_atmost, 0), min(j[2] - must_atleast, len(j_new))]
                         going = [inter, must_atleast, must_atmost]
                         if IDanger not in possibleDangers and len(i_new) > 0:
                             possibleDangers.append(IDanger)
