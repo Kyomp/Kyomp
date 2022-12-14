@@ -62,7 +62,7 @@ while len(possibleSpace) > 0:
         #If you want to script to stop after a game over
         # break
         # If you want the game to continue playing until it wins
-        click(pyautogui.locateOnScreen('dead.png'))
+        click(pyautogui.locateOnScreen('dead.png', confidence=0.8))
         possibleSpace = set(pyautogui.locateAllOnScreen('Untouched.png', confidence=0.8, region=reg))
         safe.clear()
         definite.clear()
@@ -94,8 +94,67 @@ while len(possibleSpace) > 0:
                 possibleDangers.append([UntouchedZone, must, must])
             flagged.update(definite)
             possibleSpace.difference_update(safe)
+    # copy = possibleDangers.copy()
+    # if len(safe) == 0 and len(definite) == 0:
+    #     print('logic')
+    #     for i in possibleDangers:
+    #         if len(i[0]) == 0:
+    #             continue
+    #         ToBeAdded = []
+    #         for j in possibleDangers:
+    #             if len(j[0]) == 0:
+    #                 continue
+    #             if i == j:
+    #                 continue
+    #             if i[0] == j[0]:
+    #                 if i[2] - i[1] > j[2] - j[1]:
+    #                     if i in possibleDangers:
+    #                         possibleDangers.remove(i)
+    #                     break
+    #                 else:
+    #                     possibleDangers.remove(j)
+    #                     continue
+    #             if len(i[0].intersection(j[0])) > 0:
+    #                 inter = i[0].intersection(j[0])
+    #                 i_new = i[0].difference(j[0])
+    #                 j_new = j[0].difference(i[0])
+    #                 must_atleast = max(i[1] - len(i_new), j[1] - len(j_new), 0)
+    #                 must_atmost = min(i[2], j[2], len(inter))
+    #                 IDanger = [i_new, max(i[1] - must_atmost, 0), min(i[2] - must_atleast, len(i_new))]
+    #                 JDanger = [j_new, max(j[1] - must_atmost, 0), min(j[2] - must_atleast, len(j_new))]
+    #                 going = [inter, must_atleast, must_atmost]
+    #                 if going not in possibleDangers and len(going) > 0:
+    #                     possibleDangers.append(going)
+    #                 if must_atleast == must_atmost:
+    #                     if i[2] == must_atleast:
+    #                         safe.update(i_new)
+    #                         if i in possibleDangers:
+    #                             possibleDangers.remove(i)
+    #                     elif i[1] - must_atleast == len(i_new):
+    #                         definite.update(i_new)
+    #                         if i in possibleDangers:
+    #                             possibleDangers.remove(i)
+    #                     elif IDanger not in possibleDangers and len(i_new) > 0:
+    #                         ToBeAdded.append(IDanger)
+    #                     if j[2] == must_atleast:
+    #                         safe.update(j_new)
+    #                     elif j[1] - must_atleast == len(j_new):
+    #                         definite.update(j_new)
+    #                     elif JDanger not in possibleDangers and len(j_new) > 0:
+    #                         ToBeAdded.append(JDanger)
+    #                     if i in possibleDangers:
+    #                         possibleDangers.remove(i)
+    #                     if j in possibleDangers:
+    #                         possibleDangers.remove(j)
+    #                 else:
+    #                     if IDanger not in possibleDangers and len(i_new) > 0:
+    #                         ToBeAdded.append(IDanger)
+    #                     if JDanger not in possibleDangers and len(j_new) > 0:
+    #                         ToBeAdded.append(JDanger)
+    #         possibleDangers.extend(ToBeAdded)
+    # possibleDangers = copy.copy()
     if len(safe) == 0 and len(definite) == 0:
-        print('logic')
+        print('SUPER LOGIC!!!')
         for i in possibleDangers:
             if len(i[0]) == 0:
                 continue
@@ -107,7 +166,8 @@ while len(possibleSpace) > 0:
                     continue
                 if i[0] == j[0]:
                     if i[2] - i[1] > j[2] - j[1]:
-                        possibleDangers.remove(i)
+                        if i in possibleDangers:
+                            possibleDangers.remove(i)
                         break
                     else:
                         possibleDangers.remove(j)
