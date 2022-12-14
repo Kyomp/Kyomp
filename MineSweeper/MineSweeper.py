@@ -124,11 +124,14 @@ while len(possibleSpace) > 0:
                     if going not in possibleDangers and len(going) > 0:
                         possibleDangers.append(going)
                     if must_atleast == must_atmost:
-                        ToBreak = False
                         if i[2] == must_atleast:
                             safe.update(i_new)
+                            if i in possibleDangers:
+                                possibleDangers.remove(i)
                         elif i[1] - must_atleast == len(i_new):
                             definite.update(i_new)
+                            if i in possibleDangers:
+                                possibleDangers.remove(i)
                         elif IDanger not in possibleDangers and len(i_new) > 0:
                             ToBeAdded.append(IDanger)
                         if j[2] == must_atleast:
