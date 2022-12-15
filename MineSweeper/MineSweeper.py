@@ -181,7 +181,7 @@ while len(possibleSpace) > 0:
                     IDanger = [i_new, max(i[1] - must_atmost, 0), min(i[2] - must_atleast, len(i_new))]
                     JDanger = [j_new, max(j[1] - must_atmost, 0), min(j[2] - must_atleast, len(j_new))]
                     going = [inter, must_atleast, must_atmost]
-                    if going not in possibleDangers and len(going) > 0:
+                    if going not in (possibleDangers or ToBeAdded) and len(going) > 0:
                         possibleDangers.append(going)
                     if must_atleast == must_atmost:
                         if i[2] == must_atleast:
@@ -192,18 +192,18 @@ while len(possibleSpace) > 0:
                             definite.update(i_new)
                             if i in possibleDangers:
                                 possibleDangers.remove(i)
-                        elif IDanger not in possibleDangers and len(i_new) > 0:
+                        elif IDanger not in (possibleDangers or ToBeAdded) and len(i_new) > 0:
                             ToBeAdded.append(IDanger)
                         if j[2] == must_atleast:
                             safe.update(j_new)
                         elif j[1] - must_atleast == len(j_new):
                             definite.update(j_new)
-                        elif JDanger not in possibleDangers and len(j_new) > 0:
+                        elif JDanger not in (possibleDangers or ToBeAdded) and len(j_new) > 0:
                             ToBeAdded.append(JDanger)
                     else:
-                        if IDanger not in possibleDangers and len(i_new) > 0:
+                        if IDanger not in (possibleDangers or ToBeAdded) and len(i_new) > 0:
                             ToBeAdded.append(IDanger)
-                        if JDanger not in possibleDangers and len(j_new) > 0:
+                        if JDanger not in (possibleDangers or ToBeAdded) and len(j_new) > 0:
                             ToBeAdded.append(JDanger)
             possibleDangers.extend(ToBeAdded)
     if len(safe) == 0 and len(definite) == 0 and len(possibleSpace) > 0:
